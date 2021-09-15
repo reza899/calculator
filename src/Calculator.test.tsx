@@ -2,6 +2,7 @@ import React from "react";
 import { render, screen } from "@testing-library/react";
 import App from "./App";
 import Calculator from "./Calculator";
+import userEvent from "@testing-library/user-event";
 
 describe("<Calculator />", () => {
   it("shows numbers", () => {
@@ -26,5 +27,36 @@ describe("<Calculator />", () => {
     operations.forEach((n) =>
       expect(screen.getByText(n.toString())).toBeInTheDocument()
     );
+  });
+
+  it("renders equal and clear sign", () => {
+    render(<Calculator />);
+    const equalEl = "=";
+    const clearEl = "C";
+    expect(screen.getByText(equalEl)).toBeInTheDocument();
+    expect(screen.getByText(clearEl)).toBeInTheDocument();
+  });
+
+  it("renders an input", () => {
+    render(<Calculator />);
+    const inputEl = screen.getByTestId("input-value");
+    expect(inputEl).toBeDisabled();
+  });
+
+  it("display users inputs", async () => {
+    render(<Calculator />);
+
+    const one = screen.getByText("1");
+    const two = screen.getByText("2");
+    const plusOperator = screen.getByText("+");
+
+    userEvent.click(one);
+    userEvent.click(plusOperator);
+    userEvent.click(two);
+
+    const result = (await screen.findByTestId(
+      "input-value"
+    )) as HTMLInputElement;
+    expect(result.value).toBe("1+2");
   });
 });
