@@ -98,4 +98,24 @@ describe("<Calculator />", () => {
 
     expect(result.value).toBe("");
   });
+
+  it("handles divided by zero", async () => {
+    render(<Calculator />);
+
+    const one = screen.getByText("1");
+    const zero = screen.getByText("0");
+    const divideOperation = screen.getByText("/");
+    const equal = screen.getByText("=");
+
+    userEvent.click(one);
+    userEvent.click(divideOperation);
+    userEvent.click(zero);
+    userEvent.click(equal);
+
+    const result = (await screen.findByTestId(
+      "input-value"
+    )) as HTMLInputElement;
+
+    expect(result.value).toBe("NaN");
+  });
 });
