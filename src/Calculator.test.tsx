@@ -59,4 +59,43 @@ describe("<Calculator />", () => {
     )) as HTMLInputElement;
     expect(result.value).toBe("1+2");
   });
+
+  it("calculate based on users inputs", async () => {
+    render(<Calculator />);
+    const one = screen.getByText("1");
+    const two = screen.getByText("2");
+    const plusOperator = screen.getByText("+");
+    const equal = screen.getByText("=");
+
+    userEvent.click(one);
+    userEvent.click(plusOperator);
+    userEvent.click(two);
+    userEvent.click(equal);
+
+    const result = (await screen.findByTestId(
+      "input-value"
+    )) as HTMLInputElement;
+
+    expect(result.value).toBe("3");
+  });
+
+  it("can clear results", async () => {
+    render(<Calculator />);
+
+    const one = screen.getByText("1");
+    const two = screen.getByText("2");
+    const plusOperator = screen.getByText("+");
+    const clear = screen.getByText("C");
+
+    userEvent.click(one);
+    userEvent.click(plusOperator);
+    userEvent.click(two);
+    userEvent.click(clear);
+
+    const result = (await screen.findByTestId(
+      "input-value"
+    )) as HTMLInputElement;
+
+    expect(result.value).toBe("");
+  });
 });
